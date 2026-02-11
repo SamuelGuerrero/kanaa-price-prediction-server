@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: kanaa-price-prediction-server
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn main:app
+    autoDeploy: true
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
