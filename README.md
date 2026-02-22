@@ -28,3 +28,34 @@ python main.py
 ## Notes
 - Render will inject `PORT`; the app uses it automatically.
 - Ensure `best_xgb_model.pkl` is in the repo root and committed.
+
+## AWS Lambda Deploy (Container + Function URL)
+This repo includes:
+- `Dockerfile.lambda`
+- `.dockerignore`
+- `scripts/deploy_lambda.sh`
+
+### Prerequisites
+- AWS CLI configured (`aws configure`)
+- Docker installed and running
+- IAM permission to manage ECR, Lambda, IAM role, and CloudWatch logs
+
+### Deploy commands
+```bash
+export AWS_REGION=us-east-1
+export APP_NAME=kanaa-price-prediction
+
+./scripts/deploy_lambda.sh deploy
+```
+
+The script will:
+1. Create (or reuse) an IAM role for Lambda.
+2. Build and push the container image to ECR.
+3. Create (or update) the Lambda function.
+4. Configure Function URL with public access.
+5. Set basic cost controls (reserved concurrency and short log retention).
+
+### Update after code changes
+```bash
+./scripts/deploy_lambda.sh deploy
+```

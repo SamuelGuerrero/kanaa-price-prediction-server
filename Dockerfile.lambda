@@ -1,0 +1,17 @@
+FROM python:3.9-slim
+
+WORKDIR /var/task
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir --timeout=300 --retries=5 -r requirements.txt gunicorn
+
+COPY . .
+
+COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt/extensions/lambda-adapter
+
+ENV PORT=8080
+ENV AWS_LAMBDA_EXEC_WRAPPER=/opt/extensions/lambda-adapter
+
+EXPOSE 8080
+
+CMD ["gunicorn", "main:app", "--bind", "0.0.0.0:8080", "--workers", "1", "--threads", "2", "--timeout", "30"]
